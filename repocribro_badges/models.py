@@ -1,3 +1,4 @@
+import datetime
 import sqlalchemy
 
 
@@ -11,7 +12,7 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
     __tablename__ = 'Badge'
     __searchable__ = ['name', 'value']
     __serializable__ = ['id', 'hash', 'name', 'style', 'colorhex',
-                        'assigner_id', 'repository_id']
+                        'issued_at', 'assigner_id', 'repository_id']
     #: Unique identifier of the page
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     #: URL slug for the page
@@ -24,6 +25,9 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
     style = sqlalchemy.Column(sqlalchemy.String(100))
     #: HTML page contents
     colorhex = sqlalchemy.Column(sqlalchemy.String(7))
+    #: Timestamp when assigned
+    issued_at = sqlalchemy.Column(sqlalchemy.DateTime(),
+                                  default=datetime.datetime.utcnow)
     #: ID of user's account within app
     assigner_id = sqlalchemy.Column(
         sqlalchemy.Integer, sqlalchemy.ForeignKey('UserAccount.id')
