@@ -1,0 +1,18 @@
+
+
+<input type="hidden" name="hash" id="hash" value="{{ badge.hash }}">
+
+<label for="name">Name</label>
+<input type="text" name="name" id="name" value="{{ badge.name }}">
+
+<label for="value">Value</label>
+<input type="text" name="value" id="value" value="{{ badge.value }}">
+
+<label for="style">Style</label>
+<select name="style" id="style">
+    <option value="flat">Flat</option>
+    {# TODO: more styles and options #}
+</select>
+
+<label for="colorhex">Color</label>
+<input type="color" name="colorhex" id="colorhex" value="{{ badge.colorhex }}">
