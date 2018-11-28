@@ -1,17 +1,17 @@
-
 <h2>Badges</h2>
 
-<table>
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Badge</th>
             <th>URL</th>
             <th>Assigner</th>
             <th>Issued at</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for badge in badges %}
+        {% for badge in repo.badges %}
             <tr>
                 <td>{# TODO: Render SVG badge (include) #}</td>
                 <td>{{ url_for('show_badge', hash=badge.hash) }}</td>
@@ -21,7 +21,19 @@
                     </a>
                 </td>
                 <td>{{ badge.issued_at }}</td>{# TODO: format date #}
+                <td></td> {# TODO: delete #}
             </tr>
         {% endfor %}
     </tbody>
 </table>
+
+{% if current_user.has_role('badger') %}
+<h3>Assign badge</h3>
+
+<form>
+    {# TODO: name #}
+    {# TODO: value #}
+    {# TODO: style #}
+    {# TODO: color #}
+</form>
+{% endif %}
