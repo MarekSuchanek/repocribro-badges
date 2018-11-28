@@ -7,7 +7,7 @@
             <th>URL</th>
             <th>Assigner</th>
             <th>Issued at</th>
-            <th></th>
+            {% if current_user.has_role('badger') %}<th></th>{% endif %}
         </tr>
     </thead>
     <tbody>
@@ -21,7 +21,13 @@
                     </a>
                 </td>
                 <td>{{ badge.issued_at }}</td>{# TODO: format date #}
-                <td></td> {# TODO: delete #}
+                {% if current_user.has_role('badger') %}
+                <td>
+                    <a href="{{ url_for('badges.delete_badge', badge_hash=badge.hash) }}" class="btn btn-danger btn-small">
+                        {{ octicon('trashcan') }}
+                    </a>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>
@@ -30,10 +36,28 @@
 {% if current_user.has_role('badger') %}
 <h3>Assign badge</h3>
 
-<form>
-    {# TODO: name #}
-    {# TODO: value #}
-    {# TODO: style #}
-    {# TODO: color #}
+<form action="" method="post">
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" id="name">
+        </div>
+        <div class="form-group col-6">
+            <label for="value">Value</label>
+            <input type="text" class="form-control" name="value" id="value">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="style">Style</label>
+            <input type="text" class="form-control" name="style" id="style">
+        </div>
+        <div class="form-group col-6">
+            <label for="colorhex">Color</label>
+            <input type="color" class="form-control" name="colorhex" id="colorhex" style="height: 2.33em">
+        </div>
+    </div>
+    <input type="hidden" name="repository_id" value="{{ repo.id }}">
+    <button type="submit" class="btn btn-success">Assign</button>
 </form>
 {% endif %}
