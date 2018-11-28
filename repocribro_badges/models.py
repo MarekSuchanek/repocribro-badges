@@ -45,6 +45,12 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
         'Repository', back_populates='badges'
     )
 
+    def __init__(self, name, value, style, colorhex):
+        self.name = name
+        self.value = value
+        self.style = style
+        self.colorhex = colorhex
+
     def __repr__(self):
         """Standard string representation of DB object
         :return: Unique string representation
@@ -53,12 +59,11 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
         return '<Badge {} (#{})>'.format(self.hash, self.id)
 
 
-# TODO: add to core model?
 Repository.badges = sqlalchemy.orm.relationship(
     'Badge', back_populates='repository',
     cascade='all, delete-orphan'
 )
 UserAccount.assigned_badges = sqlalchemy.orm.relationship(
-    'UserAccount', back_populates='assigner',
+    'Badge', back_populates='assigner',
     cascade='all, delete-orphan'
 )
