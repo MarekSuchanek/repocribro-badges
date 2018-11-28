@@ -1,4 +1,8 @@
+import flask
+
 from repocribro.extending import Extension
+from repocribro.extending.helpers import ViewTab, Badge
+from repocribro.models import Role
 
 
 class RepocribroBadges(Extension):
@@ -13,15 +17,35 @@ class RepocribroBadges(Extension):
     #: Priority of pages extension
     PRIORITY = 10
 
-    # TODO: role for badge-assigner
+    @staticmethod
+    def provide_roles():
+        return {
+            'admin': Role('badger',
+                          'badge:*',
+                          'Badge assigner/moderator'),
+        }
 
-    # TODO: model of badge related to repository
+    @staticmethod
+    def provide_models():
+        from repocribro_badges.models import Badge
+        return [Badge]
 
-    # TODO: interface to add badge to repository (with preview)
+    @staticmethod
+    def provide_template_loader():
+        from jinja2 import PackageLoader
+        return PackageLoader('repocribro_badges', 'templates')
 
-    # TODO: list badges on repository detail
+    @staticmethod
+    def provide_blueprints():
+        from repocribro_badges.controllers import all_blueprints
+        return all_blueprints
 
-    # TODO: generate badge for using it externally (linkable)
+    def view_core_repo_detail_tabs(self, repo, tabs_dict):
+        tabs_dict['badges'] = ViewTab(
+            'badges', 'Badges', 10,
+            flask.render_template('core/repo/badges_tab.html', repo=repo),
+            octicon='verified', badge=Badge(len(repo.badges))
+        )
 
 
 def make_extension(*args, **kwargs):
