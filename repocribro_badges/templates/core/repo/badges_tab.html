@@ -1,0 +1,77 @@
+{% from "macros/basic.html" import octicon without context %}
+<h2>Badges</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Badge</th>
+            <th>URL</th>
+            <th>Assigner</th>
+            <th>Issued at</th>
+            {% if current_user.has_role('badger') %}<th></th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for badge in repo.badges %}
+            <tr>
+                <td>
+                    {# TODO: better display of SVG #}
+                    <a href="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" target="_blank">
+                        <img src="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" alt="Badge">
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" target="_blank">
+                        {{ url_for('badges.show_badge', badge_hash=badge.hash, _external=True) }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ url_for('core.user_detail', login=badge.assigner.github_user.login) }}">
+                        {{ badge.assigner.github_user.login }}
+                    </a>
+                </td>
+                <td>{{ badge.issued_at.strftime('%d-%m-%Y %H:%M:%S') }}</td>
+                {% if current_user.has_role('badger') %}
+                <td>
+                    <a href="{{ url_for('badges.delete_badge', badge_hash=badge.hash) }}" class="btn btn-danger btn-small">
+                        {{ octicon('trashcan') }}
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if current_user.has_role('badger') %}
+<h3>Assign badge</h3>
+
+<form action="{{ url_for('badges.create_badge') }}" method="post">
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" id="name">
+        </div>
+        <div class="form-group col-6">
+            <label for="value">Value</label>
+            <input type="text" class="form-control" name="value" id="value">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="style">Style</label>
+            <select class="form-control" name="style" id="style">
+                {% for badge_style in styles %}
+                    <option value="{{ badge_style }}">{{ badge_style|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-6">
+            <label for="colorhex">Color</label>
+            <input type="color" class="form-control" name="colorhex" id="colorhex" style="height: 2.33em">
+        </div>
+    </div>
+    <input type="hidden" name="repository_id" value="{{ repo.id }}">
+    <button type="submit" class="btn btn-success">Assign</button>
+</form>
+{% endif %}
