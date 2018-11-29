@@ -1,6 +1,8 @@
 import datetime
+import hashlib
+import os
+import re
 import sqlalchemy
-
 
 from repocribro.database import db
 from repocribro.models import SearchableMixin, SerializableMixin,\
@@ -13,6 +15,8 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
     __searchable__ = ['name', 'value']
     __serializable__ = ['id', 'hash', 'name', 'style', 'colorhex',
                         'issued_at', 'assigner_id', 'repository_id']
+    # TODO: add styles
+    styles = frozenset(('flat',))
     #: Unique identifier of the page
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     #: URL slug for the page
@@ -57,6 +61,27 @@ class Badge(db.Model, SearchableMixin, SerializableMixin):
         :rtype: str
         """
         return '<Badge {} (#{})>'.format(self.hash, self.id)
+
+    @property
+    def is_valid(self):
+        if not isinstance(self.name, str) or len(self.name) < 1:
+            print(f'name:{self.name}')
+            return False
+        if not isinstance(self.value, str) or len(self.value) < 1:
+            print(f'value:{self.value}')
+            return False
+        if self.style not in self.styles:
+            print(f'style:{self.style}')
+            print(self.styles)
+            return False
+        if re.match('^#[0-9a-fA-F]{6}$', self.colorhex) is None:
+            print(f'colorhex:{self.colorhex}')
+            return False
+        return True
+
+    @staticmethod
+    def generate_random_hash():
+        return hashlib.md5(os.urandom(32)).hexdigest()
 
 
 Repository.badges = sqlalchemy.orm.relationship(

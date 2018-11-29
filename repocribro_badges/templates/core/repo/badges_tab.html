@@ -36,7 +36,7 @@
 {% if current_user.has_role('badger') %}
 <h3>Assign badge</h3>
 
-<form action="" method="post">
+<form action="{{ url_for('badges.create_badge') }}" method="post">
     <div class="row">
         <div class="form-group col-6">
             <label for="name">Name</label>
