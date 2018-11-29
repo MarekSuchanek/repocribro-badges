@@ -68,7 +68,7 @@ def delete_badge(badge_hash):
     db = flask.current_app.container.get('db')
 
     badge = db.session.query(Badge).filter_by(hash=badge_hash).first()
-    if badge is None:
+    if badge is None or badge.repository is None:
         flask.abort(404)
 
     db.session.delete(badge)
@@ -76,7 +76,7 @@ def delete_badge(badge_hash):
     flask.flash('Badge has been deleted.', 'success')
     login, reponame = badge.repository.full_name.split('/')
     return flask.redirect(
-        flask.url_for('core.repo',
+        flask.url_for('core.repo_detail',
                       login=login, reponame=reponame,
                       tab='badges')
     )
