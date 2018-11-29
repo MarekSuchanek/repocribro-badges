@@ -15,11 +15,16 @@
         {% for badge in repo.badges %}
             <tr>
                 <td>
+                    {# TODO: better display of SVG #}
                     <a href="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" target="_blank">
                         <img src="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" alt="Badge">
                     </a>
                 </td>
-                <td>{{ url_for('badges.show_badge', badge_hash=badge.hash, _external=True) }}</td>
+                <td>
+                    <a href="{{ url_for('badges.show_badge', badge_hash=badge.hash) }}" target="_blank">
+                        {{ url_for('badges.show_badge', badge_hash=badge.hash, _external=True) }}
+                    </a>
+                </td>
                 <td>
                     <a href="{{ url_for('core.user_detail', login=badge.assigner.github_user.login) }}">
                         {{ badge.assigner.github_user.login }}
