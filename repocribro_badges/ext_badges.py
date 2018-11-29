@@ -1,5 +1,7 @@
 import flask
 
+from repocribro_badges.models import Badge as RepoBadge
+
 from repocribro.extending import Extension
 from repocribro.extending.helpers import ViewTab, Badge
 from repocribro.models import Role
@@ -27,8 +29,7 @@ class RepocribroBadges(Extension):
 
     @staticmethod
     def provide_models():
-        from repocribro_badges.models import Badge
-        return [Badge]
+        return [RepoBadge]
 
     @staticmethod
     def provide_template_loader():
@@ -43,7 +44,7 @@ class RepocribroBadges(Extension):
     def view_core_repo_detail_tabs(self, repo, tabs_dict):
         tabs_dict['badges'] = ViewTab(
             'badges', 'Badges', 10,
-            flask.render_template('core/repo/badges_tab.html', repo=repo),
+            flask.render_template('core/repo/badges_tab.html', repo=repo, styles=RepoBadge.styles),
             octicon='verified', badge=Badge(len(repo.badges))
         )
 

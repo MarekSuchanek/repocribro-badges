@@ -55,7 +55,11 @@
     <div class="row">
         <div class="form-group col-6">
             <label for="style">Style</label>
-            <input type="text" class="form-control" name="style" id="style">
+            <select class="form-control" name="style" id="style">
+                {% for badge_style in styles %}
+                    <option value="{{ badge_style }}">{{ badge_style|capitalize }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group col-6">
             <label for="colorhex">Color</label>
